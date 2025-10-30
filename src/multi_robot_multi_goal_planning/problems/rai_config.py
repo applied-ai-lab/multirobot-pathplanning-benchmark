@@ -5637,6 +5637,8 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
         assembly_filename = "cube_four"
     elif assembly_name == "extreme_beam_test":
         assembly_filename = "extreme_beam_test"
+    elif assembly_name == "square":
+        assembly_filename = "square"
     else:
         raise ValueError("Assembly name not existent.")
         # path = os.path.join(
@@ -5666,6 +5668,15 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
         d = json.load(f)
 
         agents = d["agents"]
+        
+        # Figure out the joint shape and size
+        q_len = 0
+        for agent in agents:
+            q_len += len(agent["configuration"]) 
+        # Create empty container for q_global
+        q_global = np.zeros(q_len)
+        
+        start_index = 0
         for i, agent in enumerate(agents):
             relative_base_pos = np.array(agent["base_link_position"])
             relative_base_quat = np.array(agent["base_link_orientation"])
@@ -5675,9 +5686,18 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
                 C.getFrame("table")
             ).setRelativePosition(relative_base_pos).setRelativeQuaternion(
                 relative_base_quat
-            ).setJoint(ry.JT.rigid)
+            ).setJoint(
+                ry.JT.rigid
+            )
 
+            # Update the global q matrix
+            q_global[start_index: start_index + len(agent["configuration"])] = agent["configuration"]
+            start_index += len(agent["configuration"])
+            
             robots.append(f"a{i}_ur_")
+        
+        # Set global joint state
+        C.setJointState(q_global)
 
         components = d["components"]
         for i, component in enumerate(components):
