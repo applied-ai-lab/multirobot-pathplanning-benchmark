@@ -5625,7 +5625,7 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
     
     C.addFrame("table").setPosition([0, 0, 0.0]).setShape(
         ry.ST.box, size=[20, 20, 0.02, 0.005]
-    ).setColor([0.9, 0.9, 0.9]).setContact(1)
+    ).setColor([0.9, 0.9, 0.9]).setContact(1)    
 
     if assembly_name == "three_robot_truss":
         assembly_filename = "three_robot_truss"
@@ -5699,6 +5699,7 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
         # Set global joint state
         C.setJointState(q_global)
 
+        # Check this out
         components = d["components"]
         for i, component in enumerate(components):
             start_position = np.array(component["start_position"])
@@ -5729,17 +5730,20 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
             }
 
             r = component["geometry_data"]["radius"]
+            
+            # QQQQ remove after fixing
+            size = np.array(component["geometry_data"]["size"])
 
             C.addFrame(obj_name).setParent(
                 C.getFrame("table")
             ).setPosition(start_position).setShape(
-                ry.ST.cylinder, size=[r, shrinked_length, 0.005]
+                ry.ST.box, size=size
             ).setColor([1, 0.3, 0.3, 1]).setContact(0).setQuaternion(start_orientation).setJoint(ry.JT.rigid)
 
             C.addFrame("goal_" + str(i)).setParent(
                 C.getFrame("table")
             ).setPosition(goal_position).setShape(
-                ry.ST.cylinder, size=[r, length, 0.005]
+                ry.ST.box, size=size
             ).setColor([0.3, 0.3, 0.3, 0.2]).setContact(0).setQuaternion(goal_orientation)
 
             objects.append(obj_name)
@@ -5787,14 +5791,14 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
         )
         
         if gripper_type == "two_finger":
-            komo.addObjective(
-                [1, 2],
-                ry.FS.scalarProductXZ,
-                [ee_name, box],
-                ry.OT.eq,
-                [1e1],
-                [1],
-            )
+            # komo.addObjective(
+            #     [1, 2],
+            #     ry.FS.scalarProductZZ,
+            #     [ee_name, box],
+            #     ry.OT.eq,
+            #     [1e1],
+            #     [1],
+            # )
             komo.addObjective(
                 [1, 2],
                 ry.FS.positionDiff,
@@ -5803,6 +5807,20 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
                 [1e0],
                 [0, 0, 0]
             )
+            # komo.addObjective(
+            #     [1, 2],
+            #     ry.FS.scalarProductYZ,
+            #     [ee_name, box],
+            #     ry.OT.sos,
+            #     [1e1],
+            # )
+            # komo.addObjective(
+            #     [1, 2],
+            #     ry.FS.scalarProductZZ,
+            #     [ee_name, box],
+            #     ry.OT.sos,
+            #     [1e1],
+            # )
         else:
             komo.addObjective(
                 [1, 2],
