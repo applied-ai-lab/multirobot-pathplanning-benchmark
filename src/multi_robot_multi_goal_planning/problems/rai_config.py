@@ -5807,37 +5807,47 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
             [1e1, 1e1, 1],
         )
         
-        if gripper_type == "two_finger":
-            # komo.addObjective(
-            #     [1, 2],
-            #     ry.FS.scalarProductZZ,
-            #     [ee_name, box],
-            #     ry.OT.eq,
-            #     [1e1],
-            #     [1],
-            # )
-            komo.addObjective(
-                [1, 2],
-                ry.FS.positionDiff,
-                [ee_name, box],
-                ry.OT.eq,
-                [1e0],
-                [0, 0, 0]
-            )
-            # komo.addObjective(
-            #     [1, 2],
-            #     ry.FS.scalarProductYZ,
-            #     [ee_name, box],
-            #     ry.OT.sos,
-            #     [1e1],
-            # )
-            # komo.addObjective(
-            #     [1, 2],
-            #     ry.FS.scalarProductZZ,
-            #     [ee_name, box],
-            #     ry.OT.sos,
-            #     [1e1],
-            # )
+        if gripper_type == "two_finger":            
+            if str(c_tmp.getFrame(box).getShapeType()) == "ST.box":                
+                komo.addObjective(
+                    [1, 2],
+                    ry.FS.positionDiff,
+                    [ee_name, box],
+                    ry.OT.eq,
+                    [1e0],
+                    [0, 0, 0]
+                )
+            else: 
+                komo.addObjective(
+                    [1, 2],
+                    ry.FS.scalarProductXZ,
+                    [ee_name, box],
+                    ry.OT.eq,
+                    [1e1],
+                    [1],
+                )
+                komo.addObjective(
+                    [1, 2],
+                    ry.FS.positionDiff,
+                    [ee_name, box],
+                    ry.OT.eq,
+                    [1e0],
+                    [0, 0, 0]
+                )
+                # komo.addObjective(
+                #     [1, 2],
+                #     ry.FS.scalarProductYZ,
+                #     [ee_name, box],
+                #     ry.OT.sos,
+                #     [1e1],
+                # )
+                # komo.addObjective(
+                #     [1, 2],
+                #     ry.FS.scalarProductZZ,
+                #     [ee_name, box],
+                #     ry.OT.sos,
+                #     [1e1],
+                # )
         else:
             komo.addObjective(
                 [1, 2],
