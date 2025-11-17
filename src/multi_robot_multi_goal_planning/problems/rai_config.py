@@ -5728,23 +5728,40 @@ def coop_tamp_architecture_env(assembly_name, robot_type="ur10", gripper_type="t
                 "position": goal_position,
                 "orientation": goal_orientation
             }
-
-            r = component["geometry_data"]["radius"]
             
-            # QQQQ remove after fixing
-            size = np.array(component["geometry_data"]["size"])
+            geometry_type = component["geometry_type"]
+            
+            if geometry_type == "box":
+                # Get size from json
+                size = np.array(component["geometry_data"]["size"])
+                
+                C.addFrame(obj_name).setParent(
+                    C.getFrame("table")
+                ).setPosition(start_position).setShape(
+                    ry.ST.box, size=size
+                ).setColor([1, 0.3, 0.3, 1]).setContact(0).setQuaternion(start_orientation).setJoint(ry.JT.rigid)
 
-            C.addFrame(obj_name).setParent(
-                C.getFrame("table")
-            ).setPosition(start_position).setShape(
-                ry.ST.box, size=size
-            ).setColor([1, 0.3, 0.3, 1]).setContact(0).setQuaternion(start_orientation).setJoint(ry.JT.rigid)
+                C.addFrame("goal_" + str(i)).setParent(
+                    C.getFrame("table")
+                ).setPosition(goal_position).setShape(
+                    ry.ST.box, size=size
+                ).setColor([0.3, 0.3, 0.3, 0.2]).setContact(0).setQuaternion(goal_orientation)
+                
+            else:
+                # Use radius for cylindrical bars
+                r = component["geometry_data"]["radius"]
+                
+                C.addFrame(obj_name).setParent(
+                    C.getFrame("table")
+                ).setPosition(start_position).setShape(
+                    ry.ST.cylinder, size=[r, shrinked_length, 0.005]
+                ).setColor([1, 0.3, 0.3, 1]).setContact(0).setQuaternion(start_orientation).setJoint(ry.JT.rigid)
 
-            C.addFrame("goal_" + str(i)).setParent(
-                C.getFrame("table")
-            ).setPosition(goal_position).setShape(
-                ry.ST.box, size=size
-            ).setColor([0.3, 0.3, 0.3, 0.2]).setContact(0).setQuaternion(goal_orientation)
+                C.addFrame("goal_" + str(i)).setParent(
+                    C.getFrame("table")
+                ).setPosition(goal_position).setShape(
+                    ry.ST.cylinder, size=[r, length, 0.005]
+                ).setColor([0.3, 0.3, 0.3, 0.2]).setContact(0).setQuaternion(goal_orientation)
 
             objects.append(obj_name)
 
