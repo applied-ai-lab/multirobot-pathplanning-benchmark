@@ -149,7 +149,7 @@
                 -0.15399722275023772,
                 0.19
             ],
-            "geometry_type": "bar",
+            "geometry_type": "box",
             "goal_position": [
                 0.0,
                 0.0,
@@ -245,7 +245,7 @@
                 0.46544408769105783,
                 0.19
             ],
-            "geometry_type": "bar",
+            "geometry_type": "box",
             "goal_position": [
                 0.316,
                 0.277,
@@ -293,7 +293,7 @@
                 -0.7627842356534598,
                 0.23
             ],
-            "geometry_type": "bar",
+            "geometry_type": "box",
             "goal_position": [
                 0.316,
                 0.554,
@@ -341,7 +341,7 @@
                 0.6586707055218983,
                 0.19
             ],
-            "geometry_type": "bar",
+            "geometry_type": "box",
             "goal_position": [
                 0.0,
                 0.554,
@@ -389,7 +389,7 @@
                 0.037353423656133866,
                 0.23
             ],
-            "geometry_type": "bar",
+            "geometry_type": "box",
             "goal_position": [
                 -0.316,
                 0.554,
@@ -437,7 +437,7 @@
                 -0.2973660516736705,
                 0.19
             ],
-            "geometry_type": "bar",
+            "geometry_type": "box",
             "goal_position": [
                 -0.316,
                 0.277,
@@ -485,7 +485,7 @@
                 -0.15729883113879878,
                 0.23
             ],
-            "geometry_type": "bar",
+            "geometry_type": "box",
             "goal_position": [
                 -0.316,
                 0.0,
